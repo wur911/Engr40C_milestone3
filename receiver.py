@@ -47,7 +47,7 @@ class Receiver:
 
         # Find the sample corresp. to the first reliable bit "1"; this step 
         # is crucial to a proper and correct synchronization w/ the xmitter.
-        offset =  # fill in the result of the high-energy check
+        offset =  0# fill in the result of the high-energy check
         if offset < 0:
             print '*** ERROR: Could not detect any ones (so no preamble). ***'
             print '\tIncrease volume / turn on mic?'

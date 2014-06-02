@@ -23,9 +23,14 @@ class Transmitter:
         The output should be the concatenation of arrays of
             [silence bits], [preamble bits], and [databits]
         '''
+        preamble = [1, 0, 1, 1, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 0, 1]
         # fill in your implementation
-
-        print '\tSent Preamble: ', # fill in here
+        databits_with_preamble = []
+        for i in range(self.silence):
+            databits_with_preamble.append(0)
+        databits_with_preamble += preamble
+        databits_with_preamble += databits
+        print '\tSent Preamble: ', preamble
         return databits_with_preamble
 
     def bits_to_samples(self, databits_with_preamble):
@@ -34,8 +39,11 @@ class Transmitter:
         Sample values for bit '1', '0' should be [one], 0 respectively.
         Output should be an array of samples.
         '''
-        # fill in your implemenation
-
+        samples = []
+        for i in range(len(databits_with_preamble)):
+            for j in range(self.spb):
+                if databits_with_preamble[i] == 0: samples.append(0)
+                if databits_with_preamble[i] == 1: samples.append(self.one)
         return samples
         
     def modulate(self, samples):
@@ -43,6 +51,10 @@ class Transmitter:
         Multiply samples by a local sinusoid carrier of the same length.
         Return the multiplied result.
         '''
+        mod_samples = []
+        for i in range(len(samples))
+        modded_sample = samples[i] * math.cos(2*math.pi*(self.fc/self.samplerate)*i)
+        mod_samples.append(modded_sample)
         # fill in your implementation
         print '\tNumber of samples being sent:', # fill in here
 
