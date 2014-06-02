@@ -31,7 +31,23 @@ class Receiver:
         Use kmeans clustering with the demodulated samples
         '''
         # fill in your implementation 
-        
+        one = 1.0
+        zero = 0.0
+        newone = 2.0
+        newzero = -1.0
+        while newone-one > 0.01 and zero-newzero > 0.01:
+            onecluster = []
+            zerocluster = []
+            for val in demod_samples:
+                if one-val < val-zero:
+                    onecluster.append(val)
+                else:
+                    zerocluster.append(val)
+            newone = sum(onecluster)/len(onecluster)
+            newzero = sum(zerocluster)/len(zerocluster)
+        one = newone
+        zero = newzero
+        thresh = (one+zero)/2
         return one, zero, thresh
 
     def energycheck(self, demod_samples, thresh, one):
