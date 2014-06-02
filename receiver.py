@@ -22,6 +22,7 @@ class Receiver:
         self.fc = carrier_freq
         self.samplerate = samplerate
         self.spb = spb 
+        self.preamble = [1, 0, 1, 1, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 0, 1]
         print 'Receiver: '
 
     def detect_threshold(self, demod_samples):
@@ -32,7 +33,32 @@ class Receiver:
         # fill in your implementation 
         
         return one, zero, thresh
+
+    def energycheck(self, demod_samples, thresh, one):
+        for i in range(0, len(demod_samples)+1 - self.spb):
+            window = demod_samples[i: i + self.spb]
+            quarter = len(window)/4
+            avg = numpy.average(window[quarter:len(window)-quarter])
+            if avg > (one + thresh)/2.0:
+                return i
+        return 0
  
+
+    def findPreambleOffset(self, demod_samples, offset):
+        preamble_samples = common.bits_to_samples(self.preamble, self.spb, self.one)
+        preamble_length = len(preamble_samples)
+        upperBound =  offset + 3 * preamble_length;
+        index = 0
+        max_correlation = 0
+        for i in range(offset, upperBound):
+            norm = numpy.linalg.norm(demod_samples[i: i + preamble_length])
+            correlation = numpy.correlate(preamble_samples, demod_samples[i: i + preamble_length])/norm
+            if correlation > max_correlation:
+                max_correlation = correlation
+                index = i
+
+        return index-offset
+
     def detect_preamble(self, demod_samples, thresh, one):
         '''
         Find the sample corresp. to the first reliable bit "1"; this step 
@@ -47,7 +73,8 @@ class Receiver:
 
         # Find the sample corresp. to the first reliable bit "1"; this step 
         # is crucial to a proper and correct synchronization w/ the xmitter.
-        offset =  0# fill in the result of the high-energy check
+
+        offset =  self.energycheck(demod_samples, thresh, one);
         if offset < 0:
             print '*** ERROR: Could not detect any ones (so no preamble). ***'
             print '\tIncrease volume / turn on mic?'
@@ -60,7 +87,7 @@ class Receiver:
         samples is the highest. 
         '''
         # Fill in your implementation of the cross-correlation check procedure
-
+        pre_offset = self.findPreambleOffset(demod_samples, offset);
         '''
         [pre_offset] is the additional amount of offset starting from [offset],
         (not a absolute index reference by [0]). 

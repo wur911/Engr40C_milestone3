@@ -35,3 +35,17 @@ def lpfilter(samples_in, omega_cut):
     	samples_out.append(sum)
     
     return numpy.array(samples_out)
+
+def bits_to_samples(bits, spb, one):
+        '''
+        Convert each bits into [spb] samples. 
+        Sample values for bit '1', '0' should be [one], 0 respectively.
+        Output should be an array of samples.
+        '''
+        samples = []
+        for i in range(len(bits)):
+            for j in range(spb):
+                if bits[i] == 0: samples.append(0)
+                if bits[i] == 1: samples.append(one)
+        return samples
+        
