@@ -127,7 +127,34 @@ class Receiver:
         '''
 
         # Fill in your implementation
-        pass
+        zerovals = []
+        onevals = []
+        for i in range(0,len(self.preamble)):
+            midpoint = demod_samples[barker_start + self.spb/4 + i*self.spb : barker_start + 3*self.spb/4 + i*self.spb]
+            average = 2*sum(midpoint)/self.spb
+            if self.preamble[i] == 0:
+                zerovals.append(average)
+            else:
+                onevals.append(average)
+        zero = sum(zerovals)/len(zerovals)
+        one = sum(onevals)/len(onevals)
+        thresh = (zero+one)/2
+        
+        data_bits = []
+        for i in range(0,(len(demod_samples)-barker_start)/self.spb):
+            midpoint = demod_samples[barker_start + self.spb/4 + i*self.spb : barker_start + 3*self.spb/4 + i*self.spb]
+            average = 2*sum(midpoint)/self.spb
+            if average > thresh:
+                data_bits.append(1)
+            else:
+                data_bits.append(0)
+        for i in range(0,len(self.preamble)):
+            if self.preamble[i] != data_bits[i]:
+                print "Cannot read preamble. Exiting..."
+                sys.exit(1)
+        output = data_bits[len(self.preamble)]
+        
+        return numpy.array(output)
 
     def demodulate(self, samples):
         '''
