@@ -30,7 +30,7 @@ class Receiver:
         Use kmeans clustering with the demodulated samples
         '''
         # fill in your implementation 
-
+        
         return one, zero, thresh
  
     def detect_preamble(self, demod_samples, thresh, one):
@@ -38,7 +38,7 @@ class Receiver:
         Find the sample corresp. to the first reliable bit "1"; this step 
         is crucial to a proper and correct synchronization w/ the xmitter.
         '''
-
+        
         '''
         First, find the first sample index where you detect energy based on the
         moving average method described in the milestone 2 description.
