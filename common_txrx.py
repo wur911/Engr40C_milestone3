@@ -12,7 +12,6 @@ def lpfilter(samples_in, omega_cut):
 
     L = 50
     samples_out = []
-
 	# set the filter unit sample response
     h = []
     for n in range(-L, L+1):
@@ -22,7 +21,7 @@ def lpfilter(samples_in, omega_cut):
     		h.append(math.sin(omega_cut * n) / (math.pi*n))
    
     #pad samples with zeros on either side to pretend like we have an everlasting signal 
-    padding = numpy.zeros(50)
+    padding = numpy.zeros(L)
     padded_samples = numpy.append(padding, samples_in)
     padded_samples = numpy.append(padded_samples, padding)
     # convolve unit sample response with input samples
