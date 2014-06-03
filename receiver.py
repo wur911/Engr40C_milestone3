@@ -61,8 +61,8 @@ class Receiver:
         return 0
  
 
-    def findPreambleOffset(self, demod_samples, offset):
-        preamble_samples = common.bits_to_samples(self.preamble, self.spb, self.one)
+    def findPreambleOffset(self, demod_samples, offset, one):
+        preamble_samples = common.bits_to_samples(self.preamble, self.spb, one)
         preamble_length = len(preamble_samples)
         upperBound =  offset + 3 * preamble_length;
         index = 0
@@ -104,7 +104,7 @@ class Receiver:
         samples is the highest. 
         '''
         # Fill in your implementation of the cross-correlation check procedure
-        pre_offset = self.findPreambleOffset(demod_samples, offset);
+        pre_offset = self.findPreambleOffset(demod_samples, offset, one);
         '''
         [pre_offset] is the additional amount of offset starting from [offset],
         (not a absolute index reference by [0]). 
@@ -171,6 +171,7 @@ class Receiver:
         demod_samples = []
         for i in range(len(demod_filter)):
             demod_samples.append(abs(demod_filter[i]))
+
         return demod_samples
 
     def decode(self, recd_bits):
