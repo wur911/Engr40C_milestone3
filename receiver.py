@@ -30,8 +30,36 @@ class Receiver:
         Returns representative sample values for bit 0, 1 and the threshold.
         Use kmeans clustering with the demodulated samples
         '''
-        # fill in your implementation 
+        centroid1 = min(demod_samples)
+        centroid2 = max(demod_samples) 
+        prev1 = 0
+        prev2 = 0
 
+        # insert code to implement 2-means clustering     
+        while ((centroid1 != prev1) and (centroid2 != prev2)):
+            prev1 = centroid1
+            prev2 = centroid2
+            sum1 = 0
+            sum2 = 0
+            count1 = 0
+            count2 = 0
+
+            for n in range(len(demod_samples)):
+              sample = demod_samples[n];
+              if(abs(sample-centroid1) <= abs(sample-centroid2)):
+                sum1 += sample
+                count1 += 1
+              else:
+                sum2 += sample
+                count2 += 1
+
+            centroid1 = sum1/count1
+            centroid2 = sum2/count2
+
+        zero = centroid1
+        one = centroid2
+        thresh = (zero + one)/2
+        
         return one, zero, thresh
 
     def energycheck(self, demod_samples, thresh, one):
@@ -51,7 +79,7 @@ class Receiver:
         index = 0
         max_correlation = 0
         for i in range(offset, upperBound):
-            norm = numpy.linalg.norm(demod_samples[i: i + preamble_length])
+            norm = LA.norm(demod_samples[i: i + preamble_length])
             correlation = numpy.correlate(preamble_samples, demod_samples[i: i + preamble_length])/norm
             if correlation > max_correlation:
                 max_correlation = correlation
@@ -118,7 +146,15 @@ class Receiver:
         Perform quadrature modulation.
         Return the demodulated samples.
         '''
+        demod_samples = []
+        omega_cut = math.pi*(self.fc/self.samplerate)
+        for i in range(len(samples)):
+            demodded_sample = samples[i] * numpy.exp(1j*2*omega_cut*i);
+            demod_samples.append(demodded_sample)
         # fill in your implementation
+        for i in range(len(demod_samples)):
+            LA.norm(demod_samples[i])
+        demod_samples = lpfilter(demod_samples, omega_cut)
         return demod_samples
 
     def decode(self, recd_bits):

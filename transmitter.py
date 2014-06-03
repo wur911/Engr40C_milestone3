@@ -48,11 +48,14 @@ class Transmitter:
         Return the multiplied result.
         '''
         mod_samples = []
+
+        omega_cut = 2*math.pi*(self.fc/self.samplerate);
         for i in range(len(samples)):
-            modded_sample = samples[i] * math.cos(2*math.pi*(self.fc/self.samplerate)*i)
+            modded_sample = samples[i] * math.cos(omega_cut*i)
             mod_samples.append(modded_sample)
         # fill in your implementation
         print '\tNumber of samples being sent:', # fill in here
+        mod_samples = common.lpfilter(mod_samples, omega_cut)
 
         return mod_samples
         
