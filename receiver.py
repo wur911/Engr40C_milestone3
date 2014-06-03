@@ -162,6 +162,13 @@ class Receiver:
         Return the demodulated samples.
         '''
         # fill in your implementation
+        demod_unfilter_samples = []
+        for i in range(len(samples)):
+            demod = samples[i] * math.e**(1j*2*math.pi*(self.fc/self.samplerate)*i)
+            demod_unfilter_samples.append(demod)
+        demod_filter = common.lpfilter(demod_unfilter_samples,math.pi*(self.fc/self.samplerate))
+        for i in range(len(demod_filter)):
+            demod_samples[i] = abs(demod_filter[i])
         return demod_samples
 
     def decode(self, recd_bits):
