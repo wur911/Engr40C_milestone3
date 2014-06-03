@@ -49,7 +49,7 @@ class Transmitter:
         '''
         mod_samples = []
         for i in range(len(samples)):
-            modded_sample = samples[i] * math.cos(2*math.pi*(self.fc/self.samplerate)*i)
+            modded_sample = samples[i] * math.cos(2*math.pi*(float(self.fc)/self.samplerate)*i)
             mod_samples.append(modded_sample)
         # fill in your implementation
         print '\tNumber of samples being sent:', # fill in here

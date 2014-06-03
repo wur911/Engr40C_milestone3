@@ -20,7 +20,6 @@ def lpfilter(samples_in, omega_cut):
     		h.append(omega_cut / math.pi)
     	else:
     		h.append(math.sin(omega_cut * n) / (math.pi*n))
-    
     # convolve unit sample response with input samples
     for n in range(0, len(samples_in)):
     	lower = 0 if n - L < 0 else n - L
@@ -30,9 +29,10 @@ def lpfilter(samples_in, omega_cut):
     
     	s_range = samples_in[lower:upper]
     	h_range = h[h_lower:h_upper]
+        sums = 0
     	for i in range(0, len(h_range)):
-      		sum += s_range[i] * h_range[i]
-    	samples_out.append(sum)
+      		sums += s_range[i] * h_range[i]
+    	samples_out.append(sums)
     
     return numpy.array(samples_out)
 
