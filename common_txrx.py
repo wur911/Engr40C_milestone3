@@ -32,6 +32,7 @@ def lpfilter(samples_in, omega_cut):
         for i in range(len(h)):
             c += h[i] * padded_samples[i]
     	samples_out.append(c)
+
     
     return numpy.array(samples_out)
 

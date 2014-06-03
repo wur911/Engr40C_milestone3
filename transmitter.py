@@ -51,7 +51,8 @@ class Transmitter:
 
         omega_cut = 2*math.pi*(self.fc/self.samplerate);
         for i in range(len(samples)):
-            modded_sample = samples[i] * math.cos(omega_cut*i)
+
+            modded_sample = samples[i] * math.cos(2*math.pi*(float(self.fc)/self.samplerate)*i)
             mod_samples.append(modded_sample)
         # fill in your implementation
         print '\tNumber of samples being sent:', # fill in here
