@@ -163,6 +163,7 @@ class Receiver:
         Return the demodulated samples.
         '''
         # fill in your implementation
+        print [i for i in samples if i != 0]
         demod_unfilter_samples = []
         for i in range(len(samples)):
             demod = samples[i] * math.e**(1j*2*math.pi*(float(self.fc)/self.samplerate)*i)

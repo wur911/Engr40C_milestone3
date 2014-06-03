@@ -49,14 +49,14 @@ class Transmitter:
         '''
         mod_samples = []
 
-        omega_cut = 2*math.pi*(self.fc/self.samplerate);
+        omega_cut = 4*math.pi*(float(self.fc)/self.samplerate);
         for i in range(len(samples)):
 
             modded_sample = samples[i] * math.cos(2*math.pi*(float(self.fc)/self.samplerate)*i)
             mod_samples.append(modded_sample)
         # fill in your implementation
-        print '\tNumber of samples being sent:', # fill in here
         mod_samples = common.lpfilter(mod_samples, omega_cut)
+        print '\tNumber of samples being sent:', len(mod_samples)
 
         return mod_samples
         

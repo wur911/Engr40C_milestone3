@@ -25,7 +25,6 @@ def lpfilter(samples_in, omega_cut):
     padding = numpy.zeros(50)
     padded_samples = numpy.append(padding, samples_in)
     padded_samples = numpy.append(padded_samples, padding)
-
     # convolve unit sample response with input samples
     for n in range(0, len(samples_in)):
         c = 0;
@@ -33,7 +32,6 @@ def lpfilter(samples_in, omega_cut):
             c += h[i] * padded_samples[i]
     	samples_out.append(c)
 
-    
     return numpy.array(samples_out)
 
 def bits_to_samples(bits, spb, one):
