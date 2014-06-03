@@ -153,7 +153,7 @@ class Receiver:
             if self.preamble[i] != data_bits[i]:
                 print "Cannot read preamble. Exiting..."
                 sys.exit(1)
-        output = data_bits[len(self.preamble)]
+        output = data_bits[len(self.preamble):]
         
         return numpy.array(output)
 
@@ -168,13 +168,12 @@ class Receiver:
         for i in range(len(samples)):
             demod = samples[i] * math.e**(1j*2*math.pi*(float(self.fc)/self.samplerate)*i)
             demod_unfilter_samples.append(demod)
-        print demod_unfilter_samples
         demod_filter = common.lpfilter(demod_unfilter_samples,math.pi*(float(self.fc)/self.samplerate))
         demod_samples = []
         for i in range(len(demod_filter)):
             demod_samples.append(abs(demod_filter[i]))
-
         return demod_samples
+
 
     def decode(self, recd_bits):
         return cc.get_databits(recd_bits)
