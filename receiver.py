@@ -30,36 +30,25 @@ class Receiver:
         Returns representative sample values for bit 0, 1 and the threshold.
         Use kmeans clustering with the demodulated samples
         '''
-        centroid1 = min(demod_samples)
-        centroid2 = max(demod_samples) 
-        prev1 = 0
-        prev2 = 0
+        # fill in your implementation 
+        one = 1.0
+        zero = 0.0
+        newone = 2.0
+        newzero = -1.0
+        while newone-one > 0.01 and zero-newzero > 0.01:
+            onecluster = []
+            zerocluster = []
+            for val in demod_samples:
+                if one-val < val-zero:
+                    onecluster.append(val)
+                else:
+                    zerocluster.append(val)
+            newone = sum(onecluster)/len(onecluster)
+            newzero = sum(zerocluster)/len(zerocluster)
+        one = newone
+        zero = newzero
+        thresh = (one+zero)/2
 
-        # insert code to implement 2-means clustering     
-        while ((centroid1 != prev1) and (centroid2 != prev2)):
-            prev1 = centroid1
-            prev2 = centroid2
-            sum1 = 0
-            sum2 = 0
-            count1 = 0
-            count2 = 0
-
-            for n in range(len(demod_samples)):
-              sample = demod_samples[n];
-              if(abs(sample-centroid1) <= abs(sample-centroid2)):
-                sum1 += sample
-                count1 += 1
-              else:
-                sum2 += sample
-                count2 += 1
-
-            centroid1 = sum1/count1
-            centroid2 = sum2/count2
-
-        zero = centroid1
-        one = centroid2
-        thresh = (zero + one)/2
-        
         return one, zero, thresh
 
     def energycheck(self, demod_samples, thresh, one):
@@ -92,7 +81,7 @@ class Receiver:
         Find the sample corresp. to the first reliable bit "1"; this step 
         is crucial to a proper and correct synchronization w/ the xmitter.
         '''
-
+        
         '''
         First, find the first sample index where you detect energy based on the
         moving average method described in the milestone 2 description.
@@ -139,23 +128,39 @@ class Receiver:
         '''
 
         # Fill in your implementation
-        pass
+        zerovals = []
+        onevals = []
+        for i in range(0,len(self.preamble)):
+            midpoint = demod_samples[barker_start + self.spb/4 + i*self.spb : barker_start + 3*self.spb/4 + i*self.spb]
+            average = 2*sum(midpoint)/self.spb
+            if self.preamble[i] == 0:
+                zerovals.append(average)
+            else:
+                onevals.append(average)
+        zero = sum(zerovals)/len(zerovals)
+        one = sum(onevals)/len(onevals)
+        thresh = (zero+one)/2
+        
+        data_bits = []
+        for i in range(0,(len(demod_samples)-barker_start)/self.spb):
+            midpoint = demod_samples[barker_start + self.spb/4 + i*self.spb : barker_start + 3*self.spb/4 + i*self.spb]
+            average = 2*sum(midpoint)/self.spb
+            if average > thresh:
+                data_bits.append(1)
+            else:
+                data_bits.append(0)
+        for i in range(0,len(self.preamble)):
+            if self.preamble[i] != data_bits[i]:
+                print "Cannot read preamble. Exiting..."
+                sys.exit(1)
+        output = data_bits[len(self.preamble)]
+        
+        return numpy.array(output)
 
     def demodulate(self, samples):
         '''
         Perform quadrature modulation.
         Return the demodulated samples.
         '''
-        demod_samples = []
-        omega_cut = math.pi*(self.fc/self.samplerate)
-        for i in range(len(samples)):
-            demodded_sample = samples[i] * numpy.exp(1j*2*omega_cut*i);
-            demod_samples.append(demodded_sample)
-        # fill in your implementation
-        for i in range(len(demod_samples)):
-            LA.norm(demod_samples[i])
-        demod_samples = lpfilter(demod_samples, omega_cut)
-        return demod_samples
-
     def decode(self, recd_bits):
         return cc.get_databits(recd_bits)
