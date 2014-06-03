@@ -170,8 +170,9 @@ class Receiver:
             demod_unfilter_samples.append(demod)
         print demod_unfilter_samples
         demod_filter = common.lpfilter(demod_unfilter_samples,math.pi*(float(self.fc)/self.samplerate))
+        demod_samples = []
         for i in range(len(demod_filter)):
-            demod_samples.append(LA.norm(demod_filter[i]))
+            demod_samples.append(abs(demod_filter[i]))
         return demod_samples
 
     def decode(self, recd_bits):

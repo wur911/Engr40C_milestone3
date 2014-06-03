@@ -19,20 +19,18 @@ def lpfilter(samples_in, omega_cut):
     		h.append(omega_cut / math.pi)
     	else:
     		h.append(math.sin(omega_cut * n) / (math.pi*n))
-    
+   
     #pad samples with zeros on either side to pretend like we have an everlasting signal 
     padding = numpy.zeros(L)
     padded_samples = numpy.append(padding, samples_in)
     padded_samples = numpy.append(padded_samples, padding)
-
     # convolve unit sample response with input samples
     for n in range(0, len(samples_in)):
         c = 0;
         for i in range(len(h)):
-            c += h[i] * padded_samples[n+i]
+            c += h[i] * padded_samples[i+n]
     	samples_out.append(c)
 
-    
     return numpy.array(samples_out)
 
 def bits_to_samples(bits, spb, one):
