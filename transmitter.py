@@ -57,7 +57,7 @@ class Transmitter:
         # fill in your implementation
         mod_samples = common.lpfilter(mod_samples, omega_cut)
         print '\tNumber of samples being sent:', len(mod_samples)
-
+        
         return mod_samples
         
     def encode(self, databits, cc_len):

@@ -20,7 +20,7 @@ def lpfilter(samples_in, omega_cut):
     		h.append(omega_cut / math.pi)
     	else:
     		h.append(math.sin(omega_cut * n) / (math.pi*n))
-    
+   
     #pad samples with zeros on either side to pretend like we have an everlasting signal 
     padding = numpy.zeros(50)
     padded_samples = numpy.append(padding, samples_in)
@@ -29,7 +29,7 @@ def lpfilter(samples_in, omega_cut):
     for n in range(0, len(samples_in)):
         c = 0;
         for i in range(len(h)):
-            c += h[i] * padded_samples[i]
+            c += h[i] * padded_samples[i+n]
     	samples_out.append(c)
 
     return numpy.array(samples_out)
